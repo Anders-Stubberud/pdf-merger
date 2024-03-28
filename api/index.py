@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile
 from fastapi.responses import StreamingResponse
 import io
 import PyPDF2
@@ -34,23 +34,18 @@ def combine_pdfs(files):
     return buffer_contents
 
 
-@app.get("/api/python")
-def hello_world():
-    print('punchy')
-    return {"message": "Hello World"}
+@app.post("/api/upload")
+def upload_files(files: list[UploadFile]):
+    # Process the uploaded files and combine PDFs
 
-# @app.post("/api/upload")
-# async def upload_files(files: list[UploadFile]):
-#     # Process the uploaded files and combine PDFs
+    combined_pdf_data = combine_pdfs([file.file for file in files])
 
-#     combined_pdf_data = combine_pdfs([file.file for file in files])
-
-#     # Return the combined PDF as a streaming response
-#     return StreamingResponse(
-#         io.BytesIO(combined_pdf_data),
-#         media_type='application/pdf',
-#         headers={
-#             'Content-Disposition': 'attachment; filename="testfile.pdf"'
-#         }
-#     )
+    # Return the combined PDF as a streaming response
+    return StreamingResponse(
+        io.BytesIO(combined_pdf_data),
+        media_type='application/pdf',
+        headers={
+            'Content-Disposition': 'attachment; filename="testfile.pdf"'
+        }
+    )
 
