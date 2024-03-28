@@ -16,11 +16,11 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
-async def combine_pdfs(files):
+def combine_pdfs(files):
     pdf_writer = PyPDF2.PdfWriter()
     for file in files:
         # Read the file contents from the FileStorage object
-        pdf_contents = await file.read()
+        pdf_contents = file.read()
 
         # Create an in-memory buffer containing the file contents
         pdf_buffer = io.BytesIO(pdf_contents)
@@ -49,10 +49,10 @@ def hello_world():
     return {"message": "Hello World"}
 
 @app.post("/api/upload/")
-async def upload_files(files: list[UploadFile]):
+def upload_files(files: list[UploadFile]):
     # Process the uploaded files and combine PDFs
 
-    combined_pdf_data = await combine_pdfs([file for file in files])
+    combined_pdf_data = combine_pdfs([file for file in files])
 
     # Return the combined PDF as a streaming response
     return StreamingResponse(
