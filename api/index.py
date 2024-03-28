@@ -2,16 +2,15 @@ from fastapi import FastAPI, UploadFile
 from fastapi.responses import StreamingResponse
 import io
 import PyPDF2
-import io
 from decimal import Decimal
 
 app = FastAPI()
 
-def combine_pdfs(files):
+async def combine_pdfs(files):
     pdf_writer = PyPDF2.PdfWriter()
     for file in files:
         # Read the file contents from the FileStorage object
-        pdf_contents = file.read()
+        pdf_contents = await file.read()
 
         # Create an in-memory buffer containing the file contents
         pdf_buffer = io.BytesIO(pdf_contents)
@@ -35,22 +34,21 @@ def combine_pdfs(files):
 
 
 @app.get("/api/python")
-def hello_world():
+async def hello_world():
     print('punchy')
     return {"message": "Hello World"}
 
-# @app.post("/api/upload")
-# def upload_files(files: list[UploadFile]):
-#     # Process the uploaded files and combine PDFs
+@app.post("/api/upload")
+async def upload_files(files: list[UploadFile]):
+    # Process the uploaded files and combine PDFs
 
-#     combined_pdf_data = combine_pdfs([file.file for file in files])
+    combined_pdf_data = await combine_pdfs([file for file in files])
 
-#     # Return the combined PDF as a streaming response
-#     return StreamingResponse(
-#         io.BytesIO(combined_pdf_data),
-#         media_type='application/pdf',
-#         headers={
-#             'Content-Disposition': 'attachment; filename="testfile.pdf"'
-#         }
-#     )
-
+    # Return the combined PDF as a streaming response
+    return StreamingResponse(
+        io.BytesIO(combined_pdf_data),
+        media_type='application/pdf',
+        headers={
+            'Content-Disposition': 'attachment; filename="testfile.pdf"'
+        }
+    )
