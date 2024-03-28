@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import StreamingResponse
 import io
 import PyPDF2
@@ -39,8 +39,12 @@ def hello_world():
     return {"message": "Hello World"}
 
 @app.post("/uploadfile/")
-def create_upload_file():
-    return {"filename": 'filename'}
+async def create_upload_file(file: UploadFile):
+    return {"filename": file.filename}
+
+# @app.post("/uploadfile/")
+# async def create_upload_file(file: UploadFile):
+#     return {"filename": file.filename}
 
 # @app.post("/api/upload/")
 # async def upload_files(files: list[UploadFile]):
