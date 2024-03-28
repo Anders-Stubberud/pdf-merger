@@ -39,8 +39,8 @@ def hello_world():
     return {"message": "Hello World"}
 
 @app.post("/uploadfile/")
-async def create_upload_file(file: UploadFile):
-    return {"filename": file.filename}
+def create_upload_file():
+    return {"filename": 'filename'}
 
 # @app.post("/api/upload/")
 # async def upload_files(files: list[UploadFile]):
