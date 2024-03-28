@@ -51,8 +51,8 @@ def hello_world():
 @app.post("/api/upload")
 def upload_files(files: list[UploadFile]):
     # Process the uploaded files and combine PDFs
-
-    combined_pdf_data = combine_pdfs([file for file in files])
+    print([file.filename for file in files])
+    combined_pdf_data = combine_pdfs([file.file for file in files])
 
     # Return the combined PDF as a streaming response
     return StreamingResponse(
