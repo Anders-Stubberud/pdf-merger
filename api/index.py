@@ -5,7 +5,9 @@ import io
 import PyPDF2
 from decimal import Decimal
 
-app = FastAPI()
+app = FastAPI(
+    body_size_limit=1024 * 1024 * 1024  # Set the maximum payload size limit to 1 GB
+)
 
 # Add CORS middleware to allow requests from all origins
 app.add_middleware(

@@ -103,7 +103,7 @@ export function CardWithForm() {
                     </form>
                 </CardContent>
                 <CardFooter className="flex grow justify-center">
-                    <Button onClick={mergePDFs} className={filesToMerge ? '' : 'invisible'}>Merge!</Button>
+                    <Button onClick={mergePDFs} className={filesToMerge ? (theme === 'dark' ? 'border border-white' : 'border border-black') : 'invisible'}>Merge!</Button>
                 </CardFooter>
             </Card>
             {
