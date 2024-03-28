@@ -1,10 +1,20 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile
 from fastapi.responses import StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware  # Import CORS middleware
 import io
 import PyPDF2
 from decimal import Decimal
 
 app = FastAPI()
+
+# Add CORS middleware to allow requests from all origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow requests from all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 async def combine_pdfs(files):
     pdf_writer = PyPDF2.PdfWriter()
@@ -37,14 +47,6 @@ async def combine_pdfs(files):
 def hello_world():
     print('punchy')
     return {"message": "Hello World"}
-
-# @app.post("/uploadfile/")
-# async def create_upload_file(file: UploadFile):
-#     return {"filename": file.filename}
-
-# @app.post("/uploadfile/")
-# async def create_upload_file(file: UploadFile):
-#     return {"filename": file.filename}
 
 @app.post("/api/upload/")
 async def upload_files(files: list[UploadFile]):
