@@ -34,11 +34,11 @@ async def combine_pdfs(files):
 
 
 @app.get("/api/python")
-async def hello_world():
+def hello_world():
     print('punchy')
     return {"message": "Hello World"}
 
-@app.post("/api/upload")
+@app.post("/api/upload/")
 async def upload_files(files: list[UploadFile]):
     # Process the uploaded files and combine PDFs
 
