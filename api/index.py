@@ -48,7 +48,7 @@ def hello_world():
     print('punchy')
     return {"message": "Hello World"}
 
-@app.post("/api/upload/")
+@app.post("/api/upload")
 def upload_files(files: list[UploadFile]):
     # Process the uploaded files and combine PDFs
 
