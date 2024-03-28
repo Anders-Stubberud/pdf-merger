@@ -1,22 +1,32 @@
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import StreamingResponse
-from fastapi.middleware.cors import CORSMiddleware  # Import CORS middleware
+from fastapi.middleware.cors import CORSMiddleware
 import io
 import PyPDF2
 from decimal import Decimal
+from starlette import status
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.requests import Request
+from starlette.responses import Response
+from starlette.types import ASGIApp
 
-app = FastAPI(
-    body_size_limit=1024 * 1024 * 1024  # Set the maximum payload size limit to 1 GB
-)
+class LimitUploadSize(BaseHTTPMiddleware):
+    def __init__(self, app: ASGIApp, max_upload_size: int) -> None:
+        super().__init__(app)
+        self.max_upload_size = max_upload_size
 
-# Add CORS middleware to allow requests from all origins
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allow requests from all origins
-    allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers
-)
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+        if request.method == 'POST':
+            if 'content-length' not in request.headers:
+                return Response(status_code=status.HTTP_411_LENGTH_REQUIRED)
+            content_length = int(request.headers['content-length'])
+            if content_length > self.max_upload_size:
+                return Response(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE)
+        return await call_next(request)
+
+app = FastAPI()
+
+app.add_middleware(LimitUploadSize, max_upload_size=50_000_000)
 
 def combine_pdfs(files):
     pdf_writer = PyPDF2.PdfWriter()
