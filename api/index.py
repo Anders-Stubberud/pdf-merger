@@ -38,17 +38,21 @@ def hello_world():
     print('punchy')
     return {"message": "Hello World"}
 
-@app.post("/api/upload/")
-async def upload_files(files: list[UploadFile]):
-    # Process the uploaded files and combine PDFs
+@app.post("/uploadfile/")
+async def create_upload_file(file: UploadFile):
+    return {"filename": file.filename}
 
-    combined_pdf_data = await combine_pdfs([file for file in files])
+# @app.post("/api/upload/")
+# async def upload_files(files: list[UploadFile]):
+#     # Process the uploaded files and combine PDFs
 
-    # Return the combined PDF as a streaming response
-    return StreamingResponse(
-        io.BytesIO(combined_pdf_data),
-        media_type='application/pdf',
-        headers={
-            'Content-Disposition': 'attachment; filename="testfile.pdf"'
-        }
-    )
+#     combined_pdf_data = await combine_pdfs([file for file in files])
+
+#     # Return the combined PDF as a streaming response
+#     return StreamingResponse(
+#         io.BytesIO(combined_pdf_data),
+#         media_type='application/pdf',
+#         headers={
+#             'Content-Disposition': 'attachment; filename="testfile.pdf"'
+#         }
+#     )
