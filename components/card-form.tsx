@@ -111,11 +111,11 @@ export function CardWithForm() {
                 </CardFooter>
             </Card>
             {
-                filesToMerge?
-                <DragAndDrop files={filesToMerge}></DragAndDrop>
-                :
                 fourOneThree?
                 <h1>413: Payload over 4.5MB</h1>
+                :
+                filesToMerge?
+                <DragAndDrop files={filesToMerge}></DragAndDrop>
                 :
                 <></>
             }
