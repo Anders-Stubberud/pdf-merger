@@ -25,11 +25,11 @@ export function CardWithForm() {
 
     const handleSelectPDFs = () => {
         (fileInputRef.current as HTMLInputElement | null)?.click();
+        setFourOneThree(false);
     };
 
     const selectPDFs = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles: File[] = Array.from(event.target.files as FileList);
-        setFourOneThree(false);
         setFilesToMerge(selectedFiles);
     };
 
