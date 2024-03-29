@@ -60,9 +60,7 @@ export function CardWithForm() {
         } catch (error: any) {
             console.error('Error uploading files:', error);
             setIsLoading(false);
-            if (error.message.includes('413')) {
-                setFourOneThree(true);
-            }
+            setFourOneThree(true);
         }
     };
 
