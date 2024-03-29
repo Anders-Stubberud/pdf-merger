@@ -21,6 +21,7 @@ export function CardWithForm() {
     const [filesToMerge, setFilesToMerge] = React.useState<File[]>();
     const { theme } = useTheme();
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const [fourOneThree, setFourOneThree] = React.useState<boolean>(false);
 
     const handleSelectPDFs = () => {
         (fileInputRef.current as HTMLInputElement | null)?.click();
@@ -28,6 +29,7 @@ export function CardWithForm() {
 
     const selectPDFs = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles: File[] = Array.from(event.target.files as FileList);
+        setFourOneThree(false);
         setFilesToMerge(selectedFiles);
     };
 
@@ -55,8 +57,12 @@ export function CardWithForm() {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error uploading files:', error);
+            setIsLoading(false);
+            if (error.message.includes('413')) {
+                setFourOneThree(true);
+            }
         }
     };
 
@@ -73,7 +79,7 @@ export function CardWithForm() {
         <div className="flex flex-col items-center justify-center">
             <Card className="w-[350px]">
                 <CardHeader>
-                    <CardTitle>Merge PDF&apos;s</CardTitle>
+                    <CardTitle>Merge PDF&apos;s <span className="text-sm">(max 4.5MB total)</span></CardTitle>
                     <CardDescription></CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -109,6 +115,9 @@ export function CardWithForm() {
             {
                 filesToMerge?
                 <DragAndDrop files={filesToMerge}></DragAndDrop>
+                :
+                fourOneThree?
+                <h1>413: Payload over 4.5MB</h1>
                 :
                 <></>
             }
